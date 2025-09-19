@@ -317,66 +317,143 @@ export default function Cart() {
     localStorage.setItem(storageKey, JSON.stringify(updatedCart));
   };
 
+  // total sum
+  const grandTotal = isData.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
   return (
     <div className="bg-gray-50 min-h-screen py-12">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">🛒 Your Cart</h1>
+        <div className="flex justify-between">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">
+            🛒 Your Cart
+          </h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">
+            💸 Total: {grandTotal.toFixed(2)}$
+          </h1>
+        </div>
 
         {isData.length === 0 ? (
           <p className="text-center text-gray-500 mt-10 text-lg">
             Your cart is empty.
           </p>
         ) : (
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isData.map((items) => (
-              <li
-                key={items.id}
-                className="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
-              >
-                <div>
-                  <img
-                    src={items.thumbnail || items.images?.[0]}
-                    alt={items.title}
-                    className="w-full h-48 object-cover rounded-xl mb-4"
-                  />
-                  <h2 className="text-lg font-semibold text-gray-800 truncate">
-                    {items.title}
-                  </h2>
-                  <p className="text-gray-500 mb-2">{items.price}$</p>
-                  <p className="text-sm text-gray-400">
-                    Added on: {todayDate} at {todayTime}
-                  </p>
-                  <p className="text-sm mt-1 text-gray-600">
-                    Quantity:{" "}
-                    <span className="font-medium text-gray-800">
-                      {items.quantity}
-                    </span>
-                  </p>
-                </div>
+          <>
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {isData.map((items) => (
+                <li
+                  key={items.id}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 flex flex-col justify-between"
+                >
+                  <div>
+                    <img
+                      src={items.thumbnail || items.images?.[0]}
+                      alt={items.title}
+                      className="w-full h-48 object-cover rounded-xl mb-4"
+                    />
+                    <h2 className="text-lg font-semibold text-gray-800 truncate">
+                      {items.title}
+                    </h2>
+                    <p className="text-gray-500 mb-2">{items.price}$</p>
+                    <p className="text-sm text-gray-400">
+                      Added on: {todayDate} at {todayTime}
+                    </p>
 
-                <div className="mt-5 flex items-center gap-2">
-                  <button
-                    className="flex-1 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition"
-                    onClick={(e) => addQuantity(e, items.id)}
-                  >
-                    +
-                  </button>
-                  <button
-                    className="flex-1 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition"
-                    onClick={(e) => removeQuantity(e, items.id)}
-                  >
-                    -
-                  </button>
-                  <button
-                    className="flex-1 bg-rose-50 border border-rose-100 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-lg transition"
-                    onClick={(e) => deleteButton(e, items.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                    <div className="flex justify-between">
+                      <p className="text-sm mt-1 text-gray-600">
+                        Quantity:{" "}
+                        <span className="font-medium text-gray-800">
+                          {items.quantity}
+                        </span>
+                      </p>
+                      <p className="text-sm mt-1 text-gray-600">
+                        Total:{" "}
+                        <span className="font-medium text-gray-800">
+                          {(items.quantity * items.price).toFixed(2)}$
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 flex items-center gap-2">
+                    <button
+                      className="font-semibold flex-1 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition"
+                      onClick={(e) => addQuantity(e, items.id)}
+                    >
+                      +
+                    </button>
+                    <button
+                      className="font-semibold flex-1 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition"
+                      onClick={(e) => removeQuantity(e, items.id)}
+                    >
+                      -
+                    </button>
+                    <button
+                      className="font-semibold flex-1 bg-rose-50 border border-rose-100 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-lg transition"
+                      onClick={(e) => deleteButton(e, items.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* MODERN TABLE */}
+            <div className="mt-12 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Quantity
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Price
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {isData.map((item) => (
+                    <tr key={item.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {item.title}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {item.quantity}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {item.price}$
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {(item.quantity * item.price).toFixed(2)}$
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-gray-50">
+                    <td
+                      colSpan="3"
+                      className="px-6 py-3 text-right font-semibold text-gray-700"
+                    >
+                      Grand Total:
+                    </td>
+                    <td className="px-6 py-3 font-semibold text-gray-800">
+                      {grandTotal.toFixed(2)}$
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

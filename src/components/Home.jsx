@@ -1,13 +1,9 @@
 // import { useQuery } from "@tanstack/react-query";
 
-
-
 // import { Link } from "react-router-dom";
 
 // export default function Home() {
 //   const storageKey = "cartList";
-
-
 
 //   const fetchIds = async () => {
 //     const res = await fetch("https://dummyjson.com/products");
@@ -50,13 +46,12 @@
 //     e.preventDefault();
 
 //     const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-   
+
 //     // find product in API data
 //     const product = data.products.find((p) => p.id === id);
-   
+
 //     // see if product already exists in cart
 //     const existingItemIndex = cart.findIndex((item) => item.id === product.id);
-   
 
 //     if (existingItemIndex !== -1) {
 //       // already in cart, increase quantity
@@ -67,7 +62,7 @@
 //     }
 
 //     localStorage.setItem(storageKey, JSON.stringify(cart));
-    
+
 //   };
 
 //   return (
@@ -117,48 +112,9 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 
 export default function Home() {
   const storageKey = "cartList";
@@ -175,6 +131,9 @@ export default function Home() {
     staleTime: 5000,
   });
 
+  if (isLoading) return <p className="text-center py-10">Loading...  <Spinner /></p>;
+  if (error) return <p className="text-center py-10 text-red-500">{error.message}</p>;
+
   const addButton = (e, id) => {
     e.preventDefault();
     const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
@@ -188,15 +147,9 @@ export default function Home() {
     }
     localStorage.setItem(storageKey, JSON.stringify(cart));
   };
-
-  if (isLoading) return <p className="text-center py-10">Loading...</p>;
-  if (error)
-    return <p className="text-center py-10 text-red-500">{error.message}</p>;
-
   return (
     <main className="bg-gray-50 min-h-screen">
       {/* Header */}
-     
 
       {/* Product Grid */}
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -207,11 +160,13 @@ export default function Home() {
               className="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
             >
               <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden">
-                <img
-                  src={product.images[0]}
-                  alt={product.title}
-                  className="w-full h-60 object-cover hover:scale-105 transition-transform duration-500"
-                />
+                <Link to={`product/${product.id}`}>
+                  <img
+                    src={product.images[0]}
+                    alt={product.title}
+                    className="w-full h-60 object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </Link>
               </div>
               <div className="flex-1 flex flex-col p-4">
                 <h2 className="text-lg font-semibold text-gray-700 mb-1 truncate">
@@ -221,12 +176,18 @@ export default function Home() {
                   {product.description}
                 </p>
                 <div className="mt-auto flex items-center justify-between">
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-semibold">
                     ${product.price}
                   </span>
+                  <Link
+                    to={`product/${product.id}`}
+                    className="font-semibold px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition"
+                  >
+                    Detail
+                  </Link>
                   <button
                     onClick={(e) => addButton(e, product.id)}
-                    className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition"
+                    className="font-semibold px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition"
                   >
                     Add
                   </button>
